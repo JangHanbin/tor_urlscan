@@ -23,9 +23,18 @@ if __name__ == "__main__":
             # if there is .onion url and start with http(there is irc protocol)
             if str(url['href']).find('.onion') != -1 and str(url['href']).find('http') != -1:
                 print("Found URL : " + url['href'])
-                page_img = join(dirname(realpath(__file__)), "_page.png")
+                name = str(url['href'])
+
+                # for delete '/' to save file
+                if name.find('://') != -1:
+                    name = name[name.find('://')+3:]
+
+                name = name.replace('/', '')
+
+                page_img = join(dirname(realpath(__file__)), name+"_page.png")
                 driver.load_url(url['href'], wait_for_page_body=True)
 
+                # need to check pk
                 insertdata(url['href'], str(driver.page_source), driver.get_screenshot_as_png())
                 driver.get_screenshot_as_file(page_img)
                 print("Screenshot is saved as %s (%s bytes)" % (page_img, getsize(page_img)))
